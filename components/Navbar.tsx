@@ -26,11 +26,10 @@ const Navbar: React.FC = () => {
             <Link to="/" className="flex items-center space-x-3 group">
               <div className="w-14 h-14 overflow-hidden rounded-full border-2 border-purple-100 shadow-sm bg-white flex items-center justify-center p-1">
                 <img 
-                  src="https://raw.githubusercontent.com/stephanstark/img/main/held.png" 
+                  src="/images/gecko_logo.png" 
                   alt="FreizeitHelden Logo" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain scale-150"
                   onError={(e) => {
-                    // Fallback in case link breaks: shows the previous logic or a simple placeholder
                     (e.target as HTMLImageElement).src = "https://api.dicebear.com/7.x/bottts/svg?seed=Chameleon";
                   }}
                 />
