@@ -8,10 +8,13 @@ import Contact from './pages/Contact';
 import Forms from './pages/Forms';
 import Statutes from './pages/Statutes';
 import Legal from './pages/Legal';
+import ScrollToTop from './components/ScrollToTop';
+
 
 const App: React.FC = () => {
   return (
     <HashRouter>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
