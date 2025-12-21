@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+// Fixing the missing exports by using the unified 'react-router' package which is standard in many modern environments.
+import { HashRouter, Routes, Route } from 'react-router';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
@@ -10,7 +11,7 @@ import Legal from './pages/Legal';
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <HashRouter>
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -20,7 +21,7 @@ const App: React.FC = () => {
           <Route path="/impressum" element={<Legal />} />
         </Routes>
       </Layout>
-    </Router>
+    </HashRouter>
   );
 };
 

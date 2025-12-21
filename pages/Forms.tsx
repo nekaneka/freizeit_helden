@@ -2,7 +2,7 @@
 import React from 'react';
 import { Download, FileText, FileCheck, ClipboardList, ShieldCheck, Heart, Landmark } from 'lucide-react';
 
-const FormCard: React.FC<{ title: string; desc: string; icon: React.ReactNode }> = ({ title, desc, icon }) => (
+const FormCard: React.FC<{ title: string; desc: string; icon: React.ReactNode; filename: string }> = ({ title, desc, icon, filename }) => (
   <div className="bg-white p-6 rounded-3xl shadow-md border border-slate-100 flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6 hover:shadow-lg transition group">
     <div className="w-16 h-16 bg-purple-50 text-[#6A2C91] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#6A2C91] group-hover:text-white transition-colors">
       {icon}
@@ -10,10 +10,14 @@ const FormCard: React.FC<{ title: string; desc: string; icon: React.ReactNode }>
     <div className="flex-grow space-y-1">
       <h3 className="font-bold text-lg text-slate-800">{title}</h3>
       <p className="text-sm text-slate-500 mb-4">{desc}</p>
-      <button className="flex items-center space-x-2 px-4 py-2 bg-[#84C225] text-white rounded-xl text-sm font-bold hover:bg-[#74ae20] transition shadow-sm active:scale-95">
+      <a 
+        href={`/documents/${filename}`}
+        download
+        className="inline-flex items-center space-x-2 px-4 py-2 bg-[#84C225] text-white rounded-xl text-sm font-bold hover:bg-[#74ae20] transition shadow-sm active:scale-95"
+      >
         <Download size={16} />
-        <span>Download (.pdf / .docx)</span>
-      </button>
+        <span>Download</span>
+      </a>
     </div>
   </div>
 );
@@ -23,22 +27,26 @@ const Forms: React.FC = () => {
     { 
       title: "Delegation Pflege", 
       desc: "Grundlagen zur Übertragung pflegerischer Tätigkeiten.", 
-      icon: <ClipboardList /> 
+      icon: <ClipboardList />,
+      filename: "Delegation_Pflege_Muster.docx"
     },
     { 
       title: "Ärztliche Anordnung – Medikamente", 
       desc: "Notwendig für die Verabreichung von Medikamenten durch unser Team.", 
-      icon: <FileText /> 
+      icon: <FileText />,
+      filename: "aerztliche_Anordnung_Medikamente.docx"
     },
     { 
       title: "Betreuungsvertrag", 
       desc: "Die vertragliche Grundlage für unsere Zusammenarbeit.", 
-      icon: <FileCheck /> 
+      icon: <FileCheck />,
+      filename: "Betreuungsvertrag_Muster.docx"
     },
     { 
       title: "Delegation komplexe medizinische Pflege", 
       desc: "Spezielle Anordnung für intensivmedizinische oder komplexe Bedürfnisse.", 
-      icon: <ClipboardList /> 
+      icon: <ClipboardList />,
+      filename: "Delegation_kompl_med_Pflege_Muster.docx"
     },
   ];
 
@@ -46,17 +54,20 @@ const Forms: React.FC = () => {
     { 
       title: "Vereinsstatuten FreizeitHelden", 
       desc: "Die offizielle Satzung unseres Vereins.", 
-      icon: <Landmark /> 
+      icon: <Landmark />,
+      filename: "Vereinsstatuten_FreizeitHelden_neu.rtf"
     },
     { 
       title: "Mitgliedsantrag", 
       desc: "Werde Teil der Helden-Familie (Standard oder Ehrenmitglied).", 
-      icon: <Heart /> 
+      icon: <Heart />,
+      filename: "Mitgliedsantrag.pdf"
     },
     { 
       title: "Datenschutz-Einwilligung", 
       desc: "Informationen zur sicheren Verarbeitung deiner Daten.", 
-      icon: <ShieldCheck /> 
+      icon: <ShieldCheck />,
+      filename: "Datenschutz_Einwilligung.pdf"
     },
   ];
 
@@ -76,7 +87,6 @@ const Forms: React.FC = () => {
         </p>
       </div>
 
-      {/* Category: Betreuung */}
       <section className="space-y-8">
         <div className="flex items-center space-x-3">
           <div className="h-8 w-2 bg-[#6A2C91] rounded-full"></div>
@@ -89,7 +99,6 @@ const Forms: React.FC = () => {
         </div>
       </section>
 
-      {/* Category: Verein */}
       <section className="space-y-8">
         <div className="flex items-center space-x-3">
           <div className="h-8 w-2 bg-[#84C225] rounded-full"></div>

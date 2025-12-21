@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+// Switching source to 'react-router' to fix module export errors.
+import { Link } from 'react-router';
 import PuzzleNav from '../components/PuzzleNav';
-import { Heart, Users, Calendar, MapPin, CheckCircle2, Star, Zap } from 'lucide-react';
+import { Heart, Users, Calendar, MapPin, CheckCircle2, Star, Zap, CreditCard } from 'lucide-react';
 
 const Home: React.FC = () => {
   return (
@@ -204,9 +205,16 @@ const Home: React.FC = () => {
                     <li>✓ Reservierte Plätze</li>
                     <li>✓ Gratis-Stunde nach 10 Buchungen</li>
                  </ul>
-                 <Link to="/kontakt" className="block w-full text-center py-5 bg-[#6A2C91] text-white rounded-2xl font-bold text-xl hover:bg-purple-800 transition">
-                    Mitglied werden
-                 </Link>
+                 {/* REPLACE THE HREF WITH YOUR PAYPAL SUBSCRIPTION LINK */}
+                 <a 
+                   href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PLACEHOLDER" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="flex items-center justify-center space-x-2 w-full py-5 bg-[#6A2C91] text-white rounded-2xl font-bold text-xl hover:bg-purple-800 transition shadow-lg"
+                 >
+                    <CreditCard size={24} />
+                    <span>Mitglied werden</span>
+                 </a>
               </div>
 
               <div className="bg-white rounded-[3rem] p-12 shadow-2xl border-t-[12px] border-[#2EB5B5] hover:-translate-y-2 transition-transform">
@@ -219,9 +227,16 @@ const Home: React.FC = () => {
                     <li>✓ Zuschüsse für Ausflüge</li>
                     <li>✓ Hilfe beim Vereinsaufbau</li>
                  </ul>
-                 <Link to="/kontakt" className="block w-full text-center py-5 bg-[#2EB5B5] text-white rounded-2xl font-bold text-xl hover:bg-turquoise-600 transition">
-                    Jetzt fördern
-                 </Link>
+                 {/* REPLACE THE HREF WITH YOUR PAYPAL DONATION LINK */}
+                 <a 
+                   href="https://www.paypal.com/donate/?hosted_button_id=PLACEHOLDER" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="flex items-center justify-center space-x-2 w-full py-5 bg-[#2EB5B5] text-white rounded-2xl font-bold text-xl hover:bg-turquoise-600 transition shadow-lg"
+                 >
+                    <Heart size={24} />
+                    <span>Jetzt fördern</span>
+                 </a>
               </div>
            </div>
         </div>
