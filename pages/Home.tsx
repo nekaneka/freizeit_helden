@@ -1,7 +1,7 @@
 
 import React from 'react';
 // Switching source to 'react-router' to fix module export errors.
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import PuzzleNav from '../components/PuzzleNav';
 import { Heart, Users, Calendar, MapPin, CheckCircle2, Star, Zap, CreditCard } from 'lucide-react';
 
