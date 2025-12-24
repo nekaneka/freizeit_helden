@@ -17,24 +17,30 @@ const Contact: React.FC = () => {
       message: formData.get('message'),
     };
 
+    // Allow plugging in a real endpoint via env. If none is provided, fall back to a local success simulation.
+    const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+
+    if (!endpoint) {
+      // Simulate a successful send so the form remains usable without a backend
+      setTimeout(() => setStatus('success'), 600);
+      return;
+    }
+
     try {
-      // This calls your future Vercel Serverless Function
-      const response = await fetch('/api/send', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        setStatus('success');
-      } else {
+      if (!response.ok) {
         throw new Error('Failed to send');
       }
+
+      setStatus('success');
     } catch (err) {
-      // For now, we simulate success if the API isn't built yet, 
-      // but in production this would set 'error'
       console.error(err);
-      setTimeout(() => setStatus('success'), 1500); 
+      setStatus('error');
     }
   };
 
