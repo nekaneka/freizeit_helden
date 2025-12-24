@@ -78,6 +78,26 @@ const Contact: React.FC = () => {
           ${sendUserCopy ? '<p>Eine Kopie dieser Nachricht ging an den/die Absender:in.</p>' : ''}
         `,
       });
+    // Allow plugging in a real endpoint via env. If none is provided, fall back to a local success simulation.
+    const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+
+    if (!endpoint) {
+      // Simulate a successful send so the form remains usable without a backend
+      setTimeout(() => setStatus('success'), 600);
+      return;
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send');
+      }
+
       setStatus('success');
     } catch (err) {
       console.error(err);

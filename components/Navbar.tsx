@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 // Using 'react-router' instead of 'react-router-dom' to resolve export issues in this environment.
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {

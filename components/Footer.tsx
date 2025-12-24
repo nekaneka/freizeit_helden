@@ -1,7 +1,7 @@
 
 import React from 'react';
 // Fixing export errors by importing Link from 'react-router'.
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Heart } from 'lucide-react';
 
 const Footer: React.FC = () => {
