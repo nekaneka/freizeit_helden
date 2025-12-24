@@ -1,13 +1,47 @@
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Check, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Check, Loader2, AlertCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const sendResendEmail = async (payload: {
+    to: string[];
+    subject: string;
+    html: string;
+  }) => {
+    const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+    const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL;
+
+    if (!apiKey || !fromEmail) {
+      throw new Error('Resend ist nicht konfiguriert (API Key oder FROM fehlt).');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: payload.to,
+        subject: payload.subject,
+        html: payload.html,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Email send failed: ${text}`);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('loading');
+    setErrorMessage(null);
 
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -17,6 +51,33 @@ const Contact: React.FC = () => {
       message: formData.get('message'),
     };
 
+    const companyEmail = import.meta.env.VITE_COMPANY_EMAIL;
+    const sendUserCopy = import.meta.env.VITE_SEND_USER_COPY !== 'false'; // default true
+
+    if (!companyEmail) {
+      setStatus('error');
+      setErrorMessage('E-Mail Versand ist nicht konfiguriert (Firmen-E-Mail fehlt).');
+      return;
+    }
+
+    const recipients = [companyEmail];
+    if (sendUserCopy && data.email) {
+      recipients.push(String(data.email));
+    }
+
+    try {
+      await sendResendEmail({
+        to: recipients,
+        subject: 'Neue Kontaktanfrage – FreizeitHelden',
+        html: `
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>E-Mail:</strong> ${data.email}</p>
+          <p><strong>Telefon:</strong> ${data.phone || '—'}</p>
+          <p><strong>Nachricht:</strong></p>
+          <p>${data.message}</p>
+          ${sendUserCopy ? '<p>Eine Kopie dieser Nachricht ging an den/die Absender:in.</p>' : ''}
+        `,
+      });
     // Allow plugging in a real endpoint via env. If none is provided, fall back to a local success simulation.
     const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
 
@@ -41,6 +102,7 @@ const Contact: React.FC = () => {
     } catch (err) {
       console.error(err);
       setStatus('error');
+      setErrorMessage('Senden fehlgeschlagen. Bitte später erneut versuchen oder die Konfiguration prüfen.');
     }
   };
 
@@ -113,6 +175,12 @@ const Contact: React.FC = () => {
             </div>
           ) : (
             <form className="space-y-6" onSubmit={handleSubmit}>
+              {status === 'error' && errorMessage && (
+                <div className="flex items-start space-x-3 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700">
+                  <AlertCircle className="mt-0.5" size={20} />
+                  <p className="text-sm font-semibold">{errorMessage}</p>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 ml-1">Vollständiger Name</label>
