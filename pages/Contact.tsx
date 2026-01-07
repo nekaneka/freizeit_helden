@@ -6,35 +6,22 @@ const Contact: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const sendResendEmail = async (payload: {
-    to: string[];
-    subject: string;
-    html: string;
+  const sendContactMessage = async (payload: {
+    name: FormDataEntryValue | null;
+    email: FormDataEntryValue | null;
+    phone: FormDataEntryValue | null;
+    message: FormDataEntryValue | null;
   }) => {
-    const apiKey = import.meta.env.VITE_RESEND_API_KEY;
-    const fromEmail = import.meta.env.VITE_RESEND_FROM_EMAIL;
-
-    if (!apiKey || !fromEmail) {
-      throw new Error('Resend ist nicht konfiguriert (API Key oder FROM fehlt).');
-    }
-
-    const response = await fetch('https://api.resend.com/emails', {
+    const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT || '/api/send';
+    const response = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: payload.to,
-        subject: payload.subject,
-        html: payload.html,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`Email send failed: ${text}`);
+      throw new Error(text || 'Failed to send');
     }
   };
 
@@ -51,58 +38,13 @@ const Contact: React.FC = () => {
       message: formData.get('message'),
     };
 
-    const companyEmail = import.meta.env.VITE_COMPANY_EMAIL;
-    const sendUserCopy = import.meta.env.VITE_SEND_USER_COPY !== 'false'; // default true
-
-    if (!companyEmail) {
-      setStatus('error');
-      setErrorMessage('E-Mail Versand ist nicht konfiguriert (Firmen-E-Mail fehlt).');
-      return;
-    }
-
-    const recipients = [companyEmail];
-    if (sendUserCopy && data.email) {
-      recipients.push(String(data.email));
-    }
-
     try {
-      await sendResendEmail({
-        to: recipients,
-        subject: 'Neue Kontaktanfrage – FreizeitHelden',
-        html: `
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>E-Mail:</strong> ${data.email}</p>
-          <p><strong>Telefon:</strong> ${data.phone || '—'}</p>
-          <p><strong>Nachricht:</strong></p>
-          <p>${data.message}</p>
-          ${sendUserCopy ? '<p>Eine Kopie dieser Nachricht ging an den/die Absender:in.</p>' : ''}
-        `,
-      });
-    // Allow plugging in a real endpoint via env. If none is provided, fall back to a local success simulation.
-    const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
-
-    if (!endpoint) {
-      // Simulate a successful send so the form remains usable without a backend
-      setTimeout(() => setStatus('success'), 600);
-      return;
-    }
-
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send');
-      }
-
+      await sendContactMessage(data);
       setStatus('success');
     } catch (err) {
       console.error(err);
       setStatus('error');
-      setErrorMessage('Senden fehlgeschlagen. Bitte später erneut versuchen oder die Konfiguration prüfen.');
+      setErrorMessage('Senden fehlgeschlagen. Bitte spaeter erneut versuchen oder die Konfiguration pruefen.');
     }
   };
 
@@ -257,3 +199,4 @@ const Contact: React.FC = () => {
 };
 
 export default Contact;
+
